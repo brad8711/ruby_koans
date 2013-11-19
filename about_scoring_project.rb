@@ -30,10 +30,46 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+ #dice should always be an array
+ raise Exception, "parameter must be an array" if dice.class != Array
+  score_hash = Hash.new(0)
+    dice.each do |value|
+    score_hash[value] += 1
+  end
+  total_score = 0 #storage for the accumulated score
+  score_hash.each do |key, value|
+    if key == 1 && value < 3
+      total_score += (key * 100) * value
+    elsif key == 1 && value == 3
+      total_score += 1000
+    elsif key == 1 && value > 3
+      score_to_add = 0
+      remaining_to_score = value- 3
+      score_to_add += 1000
+      score_to_add += (remaining_to_score * 100)
+      total_score += score_to_add
+    elsif key == 5 && value < 3
+      total_score += (key * 10) * value
+    elsif key == 5 && value > 3
+      score_to_add = 0
+          remaining_to_score = dice.size - 3
+          score_to_add += (key * 100)
+          score_to_add += (remaining_to_score * 50)
+          total_score += score_to_add
+        elsif value == 3
+      total_score += (key * 100)
+    else
+      total_score += 0
+    end
+  end
+  return total_score
 end
 
 class AboutScoringProject < Neo::Koan
+  #def test_score_param_must_be_array
+  #  assert_equal __, score(1234)
+  #end
+  
   def test_score_of_an_empty_list_is_zero
     assert_equal 0, score([])
   end
